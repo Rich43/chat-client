@@ -11,4 +11,4 @@ const MUTATION = gql`
     }
 `;
 
-export const useCreateContentMutation = () => useMutation<CreateMessage, CreateMessageVariables>(MUTATION);
+export const useCreateMessageMutation = () => useMutation<CreateMessage, CreateMessageVariables>(MUTATION);
