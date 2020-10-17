@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField } from "@material-ui/core";
-import { useCreateContentMutation } from "../graphql/createContent";
+import { useCreateContentMutation } from "../graphql/createMessage";
 
 export function Home() {
     const [content, setContent] = useState('');
