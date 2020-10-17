@@ -3,22 +3,22 @@ import { Box, Button, TextField } from "@material-ui/core";
 import { useCreateContentMutation } from "../graphql/createMessage";
 
 export function Home() {
-    const [content, setContent] = useState('');
+    const [message, setMessage] = useState('');
     const [createContent] = useCreateContentMutation();
     const onSubmit = () => {
-        console.log(content);
+        console.log(message);
         createContent(
             {
-                variables: {content}
+                variables: {message}
             }
         ).then();
     };
     return (
         <>
-            <Box p={2}>{ content }</Box>
+            <Box p={2}>{ message }</Box>
             <TextField
-                value={content}
-                onChange={event => setContent(event.target.value)}
+                value={message}
+                onChange={event => setMessage(event.target.value)}
             />
             <Button onClick={() => onSubmit()}>Submit</Button>
         </>
