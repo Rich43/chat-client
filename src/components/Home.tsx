@@ -8,6 +8,9 @@ const useStyles = makeStyles({
     chatLog: {
         height: '100%'
     },
+    inputBox: {
+        width: '100%'
+    }
 });
 
 export function Home() {
@@ -22,7 +25,7 @@ export function Home() {
         }
     }, [listMessages]);
     const onSubmit = () => {
-        console.log(message);
+        setMessage('');
         createMessage(
             {
                 variables: {message}
@@ -36,10 +39,11 @@ export function Home() {
                     className={classes.chatLog}
                     ref={ref}
                 />
-                <Box display="flex" flexDirection="row" alignSelf="flex-end">
+                <Box display="flex" flexDirection="row" alignSelf="flex-end" width="100%">
                     <TextField
                         value={message}
                         onChange={event => setMessage(event.target.value)}
+                        className={classes.inputBox}
                     />
                     <Button onClick={() => onSubmit()}>Submit</Button>
                 </Box>
