@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField } from "@material-ui/core";
 import { useCreateMessageMutation } from "../graphql/createMessage";
+import {makeStyles} from "@material-ui/core/styles";
+
+const useStyles = makeStyles({
+    chatLog: {
+        height: '100%'
+    },
+});
 
 export function Home() {
+    const classes = useStyles();
     const [message, setMessage] = useState('');
     const [createMessage] = useCreateMessageMutation();
     const onSubmit = () => {
@@ -15,12 +23,18 @@ export function Home() {
     };
     return (
         <>
-            <Box p={2}>{ message }</Box>
-            <TextField
-                value={message}
-                onChange={event => setMessage(event.target.value)}
-            />
-            <Button onClick={() => onSubmit()}>Submit</Button>
+            <Box display="flex" flexDirection="column" flex="1">
+                <textarea
+                    className={classes.chatLog}
+                />
+                <Box display="flex" flexDirection="row" alignSelf="flex-end">
+                    <TextField
+                        value={message}
+                        onChange={event => setMessage(event.target.value)}
+                    />
+                    <Button onClick={() => onSubmit()}>Submit</Button>
+                </Box>
+            </Box>
         </>
     );
 }
