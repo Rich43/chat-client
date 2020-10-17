@@ -5,7 +5,6 @@ import {ApolloProvider as ApolloHooksProvider} from '@apollo/react-hooks';
 import {client} from "./graphql";
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import Home from "./components/Home";
-import {HOME} from "./components/BaseRoute";
 
 function App() {
     const gqlClient = client;
@@ -14,7 +13,7 @@ function App() {
             <ApolloHooksProvider client={gqlClient}>
                 <BrowserRouter basename="/app">
                     <Switch>
-                        <Route path={HOME} component={Home}/>
+                        <Route path={'/'} component={Home}/>
                     </Switch>
                 </BrowserRouter>
             </ApolloHooksProvider>
