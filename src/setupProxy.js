@@ -8,4 +8,11 @@ module.exports = function(app) {
             secure: false
         })
     );
+    app.use(
+        '/subscriptions',
+        createProxyMiddleware({
+            target: 'http://localhost:8080',
+            ws: true
+        })
+    );
 };

@@ -3,6 +3,7 @@ import { Box, Button, TextField } from "@material-ui/core";
 import { useCreateMessageMutation } from "../graphql/createMessage";
 import {makeStyles} from "@material-ui/core/styles";
 import {useListMessagesQuery} from "../graphql/listMessages";
+import {useUpdateMessageSubscription} from "../graphql/updateMessage";
 
 const useStyles = makeStyles({
     chatLog: {
@@ -19,11 +20,18 @@ export function Home() {
     const ref = useRef<HTMLTextAreaElement>(null);
     const [createMessage] = useCreateMessageMutation();
     const listMessages = useListMessagesQuery();
+    const updateMessage = useUpdateMessageSubscription();
+    const updateMessageData = updateMessage.data && updateMessage.data.updateMessage;
     useEffect(() => {
         if (ref.current && listMessages.data) {
             ref.current.value = ''.concat(...listMessages.data.listMessages.map(row => `[${row.created}] ${row.message}\n`));
         }
     }, [listMessages]);
+    useEffect(() => {
+        if (ref.current && updateMessageData) {
+            ref.current.value += `[${updateMessageData.created}] ${updateMessageData.message}\n`;
+        }
+    }, [updateMessageData]);
     const onSubmit = () => {
         setMessage('');
         createMessage(
