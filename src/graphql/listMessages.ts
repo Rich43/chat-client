@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 import {useQuery} from '@apollo/react-hooks';
-import {ListMessages} from "../types/ListMessages";
+import {UpdateMessage} from "../types/UpdateMessage";
 
 const QUERY = gql`
     query ListMessages {
@@ -12,4 +12,4 @@ const QUERY = gql`
     }
 `;
 
-export const useListMessagesQuery = () => useQuery<ListMessages>(QUERY);
+export const useListMessagesQuery = () => useQuery<UpdateMessage>(QUERY);
