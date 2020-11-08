@@ -7,3 +7,4 @@ services:
     network_mode: host
     volumes:
       - ./build:/usr/share/nginx/html:ro
+      - ./nginx:/etc/nginx/conf.d
