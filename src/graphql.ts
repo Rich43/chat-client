@@ -7,7 +7,7 @@ import {InMemoryCache} from "apollo-cache-inmemory";
 import {OperationDefinitionNode} from "graphql";
 
 const wsLink = new WebSocketLink({
-    uri: '/subscriptions',
+    uri: `ws://${window.location.host}/subscriptions`,
     options: {
         reconnect: true
     }
