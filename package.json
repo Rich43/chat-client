@@ -21,6 +21,7 @@
     "apollo-link": "^1.2.14",
     "apollo-link-http": "^1.5.17",
     "apollo-link-ws": "^1.0.20",
+    "subscriptions-transport-ws": "^0.9.18",
     "apollo-utilities": "^1.3.4",
     "http-proxy-middleware": "^1.0.5",
     "mobx": "^5.15.4",
