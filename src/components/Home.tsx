@@ -51,6 +51,7 @@ export function Home() {
                     <TextField
                         value={message}
                         onChange={event => setMessage(event.target.value)}
+                        onKeyPress={event => event.charCode === 13 ? onSubmit() : undefined}
                         className={classes.inputBox}
                     />
                     <Button onClick={() => onSubmit()}>Submit</Button>
