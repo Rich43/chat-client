@@ -77,3 +77,16 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:0.0.${{ github.run_id }}-SNAPSHOT
             ghcr.io/rich43/${{ github.event.repository.name }}:latest
             ghcr.io/rich43/${{ github.event.repository.name }}:0.0.${{ github.run_id }}-SNAPSHOT
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd
+            git clone https://github.com/Rich43/archesky-docker
+            cd archesky-docker/chat
+            ./run.sh
+            cd
+            rm -rfv archesky-docker
