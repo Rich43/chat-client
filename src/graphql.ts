@@ -21,7 +21,7 @@ const link = split(
     },
     wsLink,
     httpLink,
-)
+);
 
 export const client = new ApolloClient({
     link,
