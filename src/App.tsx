@@ -1,22 +1,19 @@
 import React from 'react';
 import './App.css';
-import ApolloProvider from 'react-apollo/ApolloProvider';
-import {ApolloProvider as ApolloHooksProvider} from '@apollo/react-hooks';
-import {client} from "./graphql";
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
-import Home from "./components/Home";
+import { client } from './graphql';
+import Home from './components/Home';
+import { ApolloProvider } from '@apollo/client';
+import { BrowserRouter, Route } from 'react-router-dom';
 
 function App() {
     const gqlClient = client;
     return (
         <ApolloProvider client={gqlClient}>
-            <ApolloHooksProvider client={gqlClient}>
-                <BrowserRouter basename="/app">
-                    <Switch>
-                        <Route path={'/'} component={Home}/>
-                    </Switch>
-                </BrowserRouter>
-            </ApolloHooksProvider>
+            <BrowserRouter basename="/app">
+                <Route path="/">
+                    <Home />
+                </Route>
+            </BrowserRouter>
         </ApolloProvider>
     );
 }

@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
-import {useSubscription} from "@apollo/react-hooks";
 import {UpdateMessage} from "../types/UpdateMessage";
+import { useSubscription } from '@apollo/client';
 
 const SUBSCRIPTION = gql`
     subscription UpdateMessage {

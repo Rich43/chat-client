@@ -1,10 +1,7 @@
-import ApolloClient from "apollo-client";
-import {WebSocketLink} from "apollo-link-ws";
-import {HttpLink} from "apollo-link-http";
-import {split} from "apollo-link";
-import {getMainDefinition} from "apollo-utilities";
-import {InMemoryCache} from "apollo-cache-inmemory";
 import {OperationDefinitionNode} from "graphql";
+import { WebSocketLink } from '@apollo/client/link/ws';
+import { ApolloClient, HttpLink, InMemoryCache, split } from '@apollo/client';
+import { getMainDefinition } from '@apollo/client/utilities';
 
 const wsLink = new WebSocketLink({
     uri: `ws${window.location.protocol.toLowerCase().startsWith('https') ? 's' : ''}://${window.location.host}/subscriptions`,

@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
-import {useQuery} from '@apollo/react-hooks';
 import {ListMessages} from "../types/ListMessages";
+import { useQuery } from '@apollo/client';
 
 const QUERY = gql`
     query ListMessages {

@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
-import { useMutation } from '@apollo/react-hooks';
 import { CreateMessage, CreateMessageVariables } from "../types/CreateMessage";
+import { useMutation } from '@apollo/client';
 
 const MUTATION = gql`
     mutation CreateMessage($message: String!) {
