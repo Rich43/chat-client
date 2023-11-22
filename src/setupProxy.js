@@ -3,7 +3,7 @@ module.exports = function(app) {
     app.use(
         '/graphql',
         createProxyMiddleware({
-            target: 'http://localhost:8080',
+            target: 'http://localhost:6060',
             changeOrigin: true,
             secure: false
         })
@@ -11,7 +11,7 @@ module.exports = function(app) {
     app.use(
         '/subscriptions',
         createProxyMiddleware({
-            target: 'http://localhost:8080',
+            target: 'http://localhost:6060',
             ws: true
         })
     );
