@@ -14,11 +14,13 @@ export function Home() {
     useEffect(() => {
         if (ref.current && listMessages.data) {
             ref.current.value = ''.concat(...listMessages.data.listMessages.map(row => `[${row.created}] ${row.message}\n`));
+            ref.current.scrollTop = ref.current.scrollHeight;
         }
     }, [listMessages]);
     useEffect(() => {
         if (ref.current && updateMessageData) {
             ref.current.value += `[${updateMessageData.created}] ${updateMessageData.message}\n`;
+            ref.current.scrollTop = ref.current.scrollHeight;
         }
     }, [updateMessageData]);
     const onSubmit = () => {
