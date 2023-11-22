@@ -1,14 +1,12 @@
-import {OperationDefinitionNode} from "graphql";
-import { WebSocketLink } from '@apollo/client/link/ws';
+import { OperationDefinitionNode } from "graphql";
 import { ApolloClient, HttpLink, InMemoryCache, split } from '@apollo/client';
 import { getMainDefinition } from '@apollo/client/utilities';
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
 
-const wsLink = new WebSocketLink({
-    uri: `ws${window.location.protocol.toLowerCase().startsWith('https') ? 's' : ''}://${window.location.host}/subscriptions`,
-    options: {
-        reconnect: true
-    }
-});
+const wsLink = new GraphQLWsLink(createClient({
+    url: `ws${window.location.protocol.toLowerCase().startsWith('https') ? 's' : ''}://${window.location.host}/subscriptions`
+}));
 const httpLink = new HttpLink({
     uri: '/graphql',
 });
