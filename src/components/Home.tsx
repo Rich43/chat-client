@@ -1,48 +1,49 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useCreateMessageMutation } from "../graphql/createMessage";
 import { useListMessagesQuery } from "../graphql/listMessages";
 import { useUpdateMessageSubscription } from "../graphql/updateMessage";
 import { Box, Button, TextField } from '@mui/material';
 
 export function Home() {
-    const [message, setMessage] = useState('');
-    const ref = useRef<HTMLTextAreaElement>(null);
+    const messageHistoryRef = useRef<HTMLTextAreaElement>(null);
+    const createMessageTextBoxRef = useRef<HTMLInputElement>(null);
     const [createMessage] = useCreateMessageMutation();
     const listMessages = useListMessagesQuery(123);
     const updateMessage = useUpdateMessageSubscription();
     const updateMessageData = updateMessage.data && updateMessage.data.updateMessage;
     useEffect(() => {
-        if (ref.current && listMessages.data && listMessages.data.messages) {
-            ref.current.value = ''.concat(...listMessages.data.messages.map(row => `[${row.created}] ${row.message}\n`));
-            ref.current.scrollTop = ref.current.scrollHeight;
+        if (messageHistoryRef.current && listMessages.data && listMessages.data.messages) {
+            messageHistoryRef.current.value = ''.concat(...listMessages.data.messages.map(row => `[${row.created}] ${row.message}\n`));
+            messageHistoryRef.current.scrollTop = messageHistoryRef.current.scrollHeight;
         }
     }, [listMessages]);
     useEffect(() => {
-        if (ref.current && updateMessageData) {
-            ref.current.value += `[${updateMessageData.created}] ${updateMessageData.message}\n`;
-            ref.current.scrollTop = ref.current.scrollHeight;
+        if (messageHistoryRef.current && updateMessageData) {
+            messageHistoryRef.current.value += `[${updateMessageData.created}] ${updateMessageData.message}\n`;
+            messageHistoryRef.current.scrollTop = messageHistoryRef.current.scrollHeight;
         }
     }, [updateMessageData]);
     const onSubmit = () => {
-        setMessage('');
-        createMessage(
-            {
-                variables: {session: 123, message}
-            }
-        ).then();
+        if (createMessageTextBoxRef.current) {
+            createMessage(
+                {
+                    variables: {session: 123, message: createMessageTextBoxRef.current.value || ''}
+                }
+            ).then();
+            createMessageTextBoxRef.current.value = '';
+        }
     };
     return (
         <>
             <Box display="flex" flexDirection="column" flex="1">
                 <textarea
                     style={{height: '100%'}}
-                    ref={ref}
+                    ref={messageHistoryRef}
                 />
                 <Box display="flex" flexDirection="row" alignSelf="flex-end" width="100%">
                     <TextField
-                        value={message}
                         sx={{width: '100%'}}
-                        onChange={event => setMessage(event.target.value)}
+                        inputRef={createMessageTextBoxRef}
                         onKeyPress={event => event.charCode === 13 ? onSubmit() : undefined}
                     />
                     <Button onClick={() => onSubmit()}>Submit</Button>
