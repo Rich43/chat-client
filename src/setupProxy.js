@@ -8,11 +8,4 @@ module.exports = function(app) {
             secure: false
         })
     );
-    app.use(
-        '/graphql',
-        createProxyMiddleware({
-            target: 'http://localhost:4000/graphql',
-            ws: true
-        })
-    );
 };

@@ -4,8 +4,15 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { createClient } from "graphql-ws";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 
+let wsUri = `ws${window.location.protocol.toLowerCase().startsWith('https') ? 's' : ''}://${window.location.host}/graphql`;
+
+if (window.location.host === 'localhost:3000') {
+    wsUri = 'ws://localhost:4000/graphql';
+    console.log('Using localhost:4000');
+}
+
 const wsLink = new GraphQLWsLink(createClient({
-    url: `ws${window.location.protocol.toLowerCase().startsWith('https') ? 's' : ''}://${window.location.host}/graphql`,
+    url: wsUri,
 }));
 const httpLink = new HttpLink({
     uri: '/graphql',
