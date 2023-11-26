@@ -1,15 +1,20 @@
 import gql from "graphql-tag";
-import {ListMessages} from "../types/ListMessages";
 import { useQuery } from '@apollo/client';
+import { ListMessagesQuery, ListMessagesQueryVariables } from "../__generated__/graphql";
 
 const QUERY = gql`
-    query ListMessages {
-        listMessages {
+    query ListMessages($session: Int!) {
+        messages(session: $session) {
             id
             message
             created
+            session
         }
     }
 `;
 
-export const useListMessagesQuery = () => useQuery<ListMessages>(QUERY);
+export const useListMessagesQuery = (session: number) => useQuery<ListMessagesQuery, ListMessagesQueryVariables>(QUERY, {
+    variables: {
+        session,
+    },
+});

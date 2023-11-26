@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
-import {UpdateMessage} from "../types/UpdateMessage";
 import { useSubscription } from '@apollo/client';
+import { UpdateMessageSubscription } from "../__generated__/graphql";
 
 const SUBSCRIPTION = gql`
     subscription UpdateMessage {
@@ -8,8 +8,9 @@ const SUBSCRIPTION = gql`
             id
             message
             created
+            session
         }
     }
 `;
 
-export const useUpdateMessageSubscription = () => useSubscription<UpdateMessage>(SUBSCRIPTION);
+export const useUpdateMessageSubscription = () => useSubscription<UpdateMessageSubscription>(SUBSCRIPTION);

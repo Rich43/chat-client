@@ -1,19 +1,19 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useCreateMessageMutation } from "../graphql/createMessage";
-import {useListMessagesQuery} from "../graphql/listMessages";
-import {useUpdateMessageSubscription} from "../graphql/updateMessage";
+import { useListMessagesQuery } from "../graphql/listMessages";
+import { useUpdateMessageSubscription } from "../graphql/updateMessage";
 import { Box, Button, TextField } from '@mui/material';
 
 export function Home() {
     const [message, setMessage] = useState('');
     const ref = useRef<HTMLTextAreaElement>(null);
     const [createMessage] = useCreateMessageMutation();
-    const listMessages = useListMessagesQuery();
+    const listMessages = useListMessagesQuery(123);
     const updateMessage = useUpdateMessageSubscription();
     const updateMessageData = updateMessage.data && updateMessage.data.updateMessage;
     useEffect(() => {
-        if (ref.current && listMessages.data) {
-            ref.current.value = ''.concat(...listMessages.data.listMessages.map(row => `[${row.created}] ${row.message}\n`));
+        if (ref.current && listMessages.data && listMessages.data.messages) {
+            ref.current.value = ''.concat(...listMessages.data.messages.map(row => `[${row.created}] ${row.message}\n`));
             ref.current.scrollTop = ref.current.scrollHeight;
         }
     }, [listMessages]);
@@ -27,7 +27,7 @@ export function Home() {
         setMessage('');
         createMessage(
             {
-                variables: {message}
+                variables: {session: 123, message}
             }
         ).then();
     };

@@ -1,0 +1,26 @@
+# noinspection GraphQLTypeRedefinition
+schema {
+    query: Query
+    mutation: Mutation
+    subscription: Subscription
+}
+
+type Message {
+    id: ID!
+    message: String
+    created: String!
+    session: Int!
+}
+
+type Query {
+    messages(session: Int!): [Message!]
+}
+
+type Mutation {
+    createMessage(session: Int!, message: String!): Message!
+}
+
+type Subscription {
+    updateMessage: Message!
+    messagePruned: Int!
+}

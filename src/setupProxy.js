@@ -3,15 +3,15 @@ module.exports = function(app) {
     app.use(
         '/graphql',
         createProxyMiddleware({
-            target: 'http://localhost:6060',
+            target: 'http://localhost:4000/graphql',
             changeOrigin: true,
             secure: false
         })
     );
     app.use(
-        '/subscriptions',
+        '/graphql',
         createProxyMiddleware({
-            target: 'http://localhost:6060',
+            target: 'http://localhost:4000/graphql',
             ws: true
         })
     );
