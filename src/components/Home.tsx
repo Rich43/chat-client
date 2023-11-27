@@ -79,7 +79,7 @@ export function Home() {
     return (
         <>
             <Box display="flex" flexDirection="column" flex="1">
-                <Box display="flex" flexDirection="row" alignSelf="flex-start" width="100%" padding={2}>
+                <Box display="flex" flexDirection="row" alignSelf="flex-start" padding={2}>
                     <Box paddingRight={2}>
                         <TextField
                             id="channel"
