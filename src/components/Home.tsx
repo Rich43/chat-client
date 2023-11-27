@@ -67,10 +67,14 @@ export function Home() {
     }, [listMessagesData, refreshView]);
     useEffect(() => {
         if (messageHistoryRef.current && updateMessageData) {
+            const oldMessages = messageHistoryRef.current.value;
             refreshView(updateMessageData);
             scrollToBottom();
-            alertSfx();
+            if (oldMessages !== messageHistoryRef.current.value) {
+                alertSfx();
+            }
         }
+
     }, [updateMessageData, refreshView, alertSfx]);
     return (
         <>
