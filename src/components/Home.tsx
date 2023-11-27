@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useCreateMessageMutation } from "../graphql/createMessage";
-import { listMessagesForceRefetch, useListMessagesQuery } from "../graphql/listMessages";
+import { useListMessagesQuery } from "../graphql/listMessages";
 import { useUpdateMessageSubscription } from "../graphql/updateMessage";
 import { Box, Button, TextField } from '@mui/material';
 import { useMessagePrunedSubscription } from "../graphql/messagePruned";
+import alert from './alert.mp3';
+import useSound from "use-sound";
 
 export function Home() {
     const messageHistoryRef = useRef<HTMLTextAreaElement>(null);
@@ -19,7 +21,7 @@ export function Home() {
     const updateMessageData = updateMessage.data && updateMessage.data.updateMessage;
     const pruneMessageData = pruneMessage.data && pruneMessage.data.messagePruned;
     const listMessagesData = listMessages.data && listMessages.data.messages;
-
+    const [alertSfx] = useSound(alert);
     function scrollToBottom() {
         if (messageHistoryRef.current) {
             messageHistoryRef.current.scrollTop = messageHistoryRef.current.scrollHeight;
@@ -34,31 +36,29 @@ export function Home() {
             );
         }
     }, [messageHistoryRef, channel]);
-
-    useEffect(() => {
-        if (pruneMessageData) {
-            refreshView(pruneMessageData);
-            scrollToBottom();
-        }
-    }, [pruneMessageData, refreshView]);
     const onSubmit = useCallback(() => {
         if (messageHistoryRef.current && createMessageTextBoxRef.current) {
             createMessage(
                 {
                     variables: {session: channel, message: `<${username}> ${createMessageTextBoxRef.current.value}` || ''}
                 }
-            ).then(() => {
+            ).then(data => {
                 if (createMessageTextBoxRef.current) {
-                    listMessagesForceRefetch().then(() => {
-                        if (messageHistoryRef.current && createMessageTextBoxRef.current) {
-                            scrollToBottom();
-                            createMessageTextBoxRef.current.value = '';
-                        }
-                    });
+                    if (messageHistoryRef.current && createMessageTextBoxRef.current && data.data && data.data.createMessage) {
+                        scrollToBottom();
+                        createMessageTextBoxRef.current.value = '';
+                        refreshView(data.data.createMessage);
+                    }
                 }
             });
         }
-    }, [createMessage, username, channel]);
+    }, [createMessage, username, channel, refreshView]);
+    useEffect(() => {
+        if (pruneMessageData) {
+            refreshView(pruneMessageData);
+            scrollToBottom();
+        }
+    }, [pruneMessageData, refreshView]);
     useEffect(() => {
         if (listMessagesData) {
             refreshView(listMessagesData);
@@ -67,10 +67,11 @@ export function Home() {
     }, [listMessagesData, refreshView]);
     useEffect(() => {
         if (messageHistoryRef.current && updateMessageData) {
-            messageHistoryRef.current.value += `[${updateMessageData.created}] ${updateMessageData.message}\n`;
+            refreshView(updateMessageData);
             scrollToBottom();
+            alertSfx();
         }
-    }, [updateMessageData]);
+    }, [updateMessageData, refreshView, alertSfx]);
     return (
         <>
             <Box display="flex" flexDirection="column" flex="1">
