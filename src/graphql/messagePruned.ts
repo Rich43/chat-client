@@ -4,7 +4,12 @@ import { MessagePrunedSubscription } from "../__generated__/graphql";
 
 const SUBSCRIPTION = gql`
     subscription MessagePruned {
-        messagePruned
+        messagePruned {
+            id
+            message
+            created
+            session
+        }
     }
 `;
 
