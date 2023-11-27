@@ -8,10 +8,14 @@ import { useMessagePrunedSubscription } from "../graphql/messagePruned";
 export function Home() {
     const messageHistoryRef = useRef<HTMLTextAreaElement>(null);
     const createMessageTextBoxRef = useRef<HTMLInputElement>(null);
+    const channelRef = useRef<HTMLInputElement>(null);
+    const usernameRef = useRef<HTMLInputElement>(null);
     const [createMessage] = useCreateMessageMutation();
-    let listMessages = useListMessagesQuery(123);
+    const [channel, setChannel] = React.useState(123);
+    const [username, setUsername] = React.useState('Anonymous');
+    let listMessages = useListMessagesQuery(channel);
     const updateMessage = useUpdateMessageSubscription();
-    const pruneMessage = useMessagePrunedSubscription()
+    const pruneMessage = useMessagePrunedSubscription();
     const updateMessageData = updateMessage.data && updateMessage.data.updateMessage;
     const pruneMessageData = pruneMessage.data && pruneMessage.data.messagePruned;
     const listMessagesData = listMessages.data && listMessages.data.messages;
@@ -22,26 +26,26 @@ export function Home() {
         }
     }
 
-    function refreshView(data: any) {
+    const refreshView = useCallback((data: any) => {
         if (messageHistoryRef.current) {
             messageHistoryRef.current.value = ''.concat(
-                ...data.filter((row: any) => row.session === 123)
+                ...data.filter((row: any) => row.session === channel)
                     .map((row: any) => `[${row.created}] ${row.message}\n`)
             );
         }
-    }
+    }, [messageHistoryRef, channel]);
 
     useEffect(() => {
         if (pruneMessageData) {
             refreshView(pruneMessageData);
             scrollToBottom();
         }
-    }, [pruneMessageData]);
+    }, [pruneMessageData, refreshView]);
     const onSubmit = useCallback(() => {
         if (messageHistoryRef.current && createMessageTextBoxRef.current) {
             createMessage(
                 {
-                    variables: {session: 123, message: createMessageTextBoxRef.current.value || ''}
+                    variables: {session: channel, message: `<${username}> ${createMessageTextBoxRef.current.value}` || ''}
                 }
             ).then(() => {
                 if (createMessageTextBoxRef.current) {
@@ -54,13 +58,13 @@ export function Home() {
                 }
             });
         }
-    }, [createMessage]);
+    }, [createMessage, username, channel]);
     useEffect(() => {
         if (listMessagesData) {
             refreshView(listMessagesData);
             scrollToBottom();
         }
-    }, [listMessagesData]);
+    }, [listMessagesData, refreshView]);
     useEffect(() => {
         if (messageHistoryRef.current && updateMessageData) {
             messageHistoryRef.current.value += `[${updateMessageData.created}] ${updateMessageData.message}\n`;
@@ -70,6 +74,36 @@ export function Home() {
     return (
         <>
             <Box display="flex" flexDirection="column" flex="1">
+                <Box display="flex" flexDirection="row" alignSelf="flex-start" width="100%" padding={2}>
+                    <Box paddingRight={2}>
+                        <TextField
+                            id="channel"
+                            label="Channel"
+                            type="number"
+                            value={channel}
+                            onChange={(event) => setChannel(parseInt(event.target.value))}
+                            inputRef={channelRef}
+                            InputProps={{
+                                inputProps: {
+                                    max: 1000000, min: 100
+                                }
+                            }}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                    </Box>
+                    <TextField
+                        id="username"
+                        label="Username"
+                        value={username}
+                        onChange={(event) => setUsername(event.target.value)}
+                        inputRef={usernameRef}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Box>
                 <textarea
                     style={{height: '100%'}}
                     ref={messageHistoryRef}
