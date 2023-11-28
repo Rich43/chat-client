@@ -62,7 +62,7 @@ export function Home() {
                 }
             });
         }
-    }, [createMessage, username, channel, refreshView, isCurrentMessage, isCurrentMessageResetTimeout]);
+    }, [createMessage, username, channel, refreshView]);
     useEffect(() => {
         if (pruneMessageData) {
             refreshView(pruneMessageData);
