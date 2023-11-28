@@ -21,7 +21,13 @@ export function Home() {
     const updateMessageData = updateMessage.data && updateMessage.data.updateMessage;
     const pruneMessageData = pruneMessage.data && pruneMessage.data.messagePruned;
     const listMessagesData = listMessages.data && listMessages.data.messages;
-    const [alertSfx] = useSound(alert);
+    const [isPlaying, setIsPlaying] = React.useState(false);
+    const [isCurrentMessage, setIsCurrentMessage] = React.useState(false);
+    const [isCurrentMessageResetTimeout, setIsCurrentMessageResetTimeout] = React.useState(new Date().getTime());
+    const [alertSfx] = useSound(alert, {
+        onplay: () => setIsPlaying(true),
+        onend: () => setIsPlaying(false)
+    });
     function scrollToBottom() {
         if (messageHistoryRef.current) {
             messageHistoryRef.current.scrollTop = messageHistoryRef.current.scrollHeight;
@@ -34,9 +40,13 @@ export function Home() {
                 ...data.filter((row: any) => row.session === channel)
                     .map((row: any) => `[${row.created}] ${row.message}\n`)
             );
+            return messageHistoryRef.current.value;
         }
+        return '';
     }, [messageHistoryRef, channel]);
     const onSubmit = useCallback(() => {
+        setIsCurrentMessage(true);
+        setIsCurrentMessageResetTimeout(new Date().getTime());
         if (messageHistoryRef.current && createMessageTextBoxRef.current) {
             createMessage(
                 {
@@ -52,7 +62,7 @@ export function Home() {
                 }
             });
         }
-    }, [createMessage, username, channel, refreshView]);
+    }, [createMessage, username, channel, refreshView, isCurrentMessage, isCurrentMessageResetTimeout]);
     useEffect(() => {
         if (pruneMessageData) {
             refreshView(pruneMessageData);
@@ -68,14 +78,17 @@ export function Home() {
     useEffect(() => {
         if (messageHistoryRef.current && updateMessageData) {
             const oldMessages = messageHistoryRef.current.value;
-            refreshView(updateMessageData);
+            const newMessages = refreshView(updateMessageData);
             scrollToBottom();
-            if (oldMessages !== messageHistoryRef.current.value) {
+            if (oldMessages !== newMessages && !isPlaying && !isCurrentMessage) {
                 alertSfx();
+            }
+            if (isCurrentMessage && !isPlaying && new Date().getTime() - isCurrentMessageResetTimeout > 5000) {
+                setIsCurrentMessage(false);
             }
         }
 
-    }, [updateMessageData, refreshView, alertSfx]);
+    }, [updateMessageData, refreshView, alertSfx, isPlaying, isCurrentMessageResetTimeout, isCurrentMessage]);
     return (
         <>
             <Box display="flex" flexDirection="column" flex="1">
